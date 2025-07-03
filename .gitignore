@@ -64,10 +64,3 @@ vendor
 **/wordpress
 **/wp-content/uploads/
 **/wp-content/languages/
-
-
-!**/wp-content/plugins/admin-columns-pro
-!**/wp-content/plugins/advanced-custom-fields-pro
-!**/wp-content/plugins/cac-addon-acf-master
-!**/wp-content/plugins/default-to-gd
-!**/wp-content/plugins/mailpoet-premium
