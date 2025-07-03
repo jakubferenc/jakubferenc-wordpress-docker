@@ -14,5 +14,4 @@ define('NONCE_SALT',       'mG8,z+ +Y?f>3gE<-n-1GFZ_.f<j-2zzdQ]v,Kt<D++m=QoA-;0O
 $table_prefix  = 'wp_';
 
 define('WPLANG', 'cs_CZ');
-define( 'WP_MEMORY_LIMIT', '2048M' );
-
+define('WP_MEMORY_LIMIT', '2048M');

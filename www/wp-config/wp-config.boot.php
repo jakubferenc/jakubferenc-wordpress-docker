@@ -1,71 +1,49 @@
 <?php
 
-
 if (!defined('ROOT_DIR')) {
   define('ROOT_DIR', dirname(__DIR__) . '/');
 }
 
-define( 'WP_CONTENT_DIR', ROOT_DIR . 'wp-content' );
-define( 'WP_CONTENT_URL', 'https://' . $_SERVER['HTTP_HOST'] . '/wp-content' );
+$is_cli = (php_sapi_name() === 'cli' || defined('WP_CLI'));
 
-// Try environment variable 'WP_ENV'
-//////// //////// //////// //////// //////// //////// //////// //////// //////// //////// //////// //////// ////////
+if ($is_cli) {
+  $hostname = 'cms.local.test'; // fallback for CLI
+  $protocol = 'https://';
+} else {
+  if (isset($_SERVER['HTTP_X_FORWARDED_HOST']) && !empty($_SERVER['HTTP_X_FORWARDED_HOST'])) {
+    $hostname = $_SERVER['HTTP_X_FORWARDED_HOST'];
+  } else {
+    $hostname = $_SERVER['HTTP_HOST'] ?? 'localhost';
+  }
+
+  if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+    $_SERVER['HTTPS'] = 'on';
+  }
+
+  $hostname = filter_var($hostname, FILTER_SANITIZE_STRING);
+
+  if ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ||
+    (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')
+  ) {
+    $protocol = 'https://';
+  } else {
+    $protocol = 'http://';
+  }
+}
+
+define('WP_CONTENT_DIR', ROOT_DIR . 'wp-content');
+define('WP_CONTENT_URL', $protocol . rtrim($hostname, '/') . '/wp-content');
+
 if (getenv('WP_ENV') !== false) {
-  // Filter non-alphabetical characters for security
   define('WP_ENV', preg_replace('/[^a-z]/', '', getenv('WP_ENV')));
 }
 
-
-//////// //////// //////// //////// //////// //////// //////// //////// //////// //////// //////// //////// ////////
-
-// Define site host
-//////// //////// //////// //////// //////// //////// //////// //////// //////// //////// //////// //////// ////////
-if (isset($_SERVER['HTTP_X_FORWARDED_HOST']) && !empty($_SERVER['HTTP_X_FORWARDED_HOST'])) {
-  $hostname = $_SERVER['HTTP_X_FORWARDED_HOST'];
-} else {
-  $hostname = $_SERVER['HTTP_HOST'];
-}
-
-if (strpos($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') !== false) {
-  $_SERVER['HTTPS']='on';
-}
-//////// //////// //////// //////// //////// //////// //////// //////// //////// //////// //////// //////// ////////
-
-// Filter
-//////// //////// //////// //////// //////// //////// //////// //////// //////// //////// //////// //////// ////////
-$hostname = filter_var($hostname, FILTER_SANITIZE_STRING);
-//////// //////// //////// //////// //////// //////// //////// //////// //////// //////// //////// //////// ////////
-
-// Try server hostname
-//////// //////// //////// //////// //////// //////// //////// //////// //////// //////// //////// //////// ////////
 if (!defined('WP_ENV')) {
-  // Set environment based on hostname
   include ROOT_DIR . 'wp-config/wp-config.env.php';
 }
-//////// //////// //////// //////// //////// //////// //////// //////// //////// //////// //////// //////// ////////
 
-// Are we in SSL mode?
-//////// //////// //////// //////// //////// //////// //////// //////// //////// //////// //////// //////// ////////
-if ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') ||
-  (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')) {
-  $protocol = 'https://';
-} else {
-  $protocol = 'http://';
-}
-//////// //////// //////// //////// //////// //////// //////// //////// //////// //////// //////// //////// ////////
-
-// Load configs
-//////// //////// //////// //////// //////// //////// //////// //////// //////// //////// //////// //////// ////////
-
-// Load default config
 include ROOT_DIR . 'wp-config/wp-config.default.php';
-
-// Load config file for current environment
 include ROOT_DIR . 'wp-config/wp-config.' . WP_ENV . '.php';
-//////// //////// //////// //////// //////// //////// //////// //////// //////// //////// //////// //////// ////////
-
-// Define WordPress Site URLs if not already set in config files
-//////// //////// //////// //////// //////// //////// //////// //////// //////// //////// //////// //////// ////////
 
 if (!defined('WP_SITEURL')) {
   define('WP_SITEURL', $protocol . rtrim($hostname, '/') . '/wordpress/');
@@ -74,22 +52,10 @@ if (!defined('WP_HOME')) {
   define('WP_HOME', $protocol . rtrim($hostname, '/'));
 }
 
-
-//////// //////// //////// //////// //////// //////// //////// //////// //////// //////// //////// //////// ////////
-
-
-// Clean up
-//////// //////// //////// //////// //////// //////// //////// //////// //////// //////// //////// //////// ////////
 unset($hostname, $protocol);
-//////// //////// //////// //////// //////// //////// //////// //////// //////// //////// //////// //////// ////////
 
-
-/* That's all, stop editing! Happy blogging. */
-/** Absolute path to the WordPress directory. */
 if (!defined('ABSPATH')) {
   define('ABSPATH', dirname(__FILE__) . '/wordpress/');
-
 }
 
-/** Sets up WordPress vars and included files. */
-require_once(ABSPATH . 'wp-settings.php');
+require_once ABSPATH . 'wp-settings.php';

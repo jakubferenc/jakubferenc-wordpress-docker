@@ -1,0 +1,7 @@
+cms.local.test {
+    tls /certs/cms.local.test.pem /certs/cms.local.test-key.pem
+
+    handle_path /wordpress* {
+        reverse_proxy wordpress:80
+    }
+}
