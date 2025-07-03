@@ -1,0 +1,73 @@
+# Common #
+**/node_modules
+**/tmp
+**/dist
+**/temp
+**/local
+**/npm-debug.log
+**/reports
+**/bower_components
+**/asset_manifest.json
+**/resources
+**/_resources
+
+
+# Logs and databases #
+*.log
+
+
+# OS generated files #
+**/DS_Store
+**/.DS_Store
+**/.DS_Store?
+# ._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+**/Thumbs.db
+
+
+# Packages #
+# it's better to unpack these files and commit the raw source
+# git has its own built in compression methods
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Development #
+**/coverage
+**/.idea
+**/design
+**/.sass-cache
+/.sass-cache/
+*.pdf
+*.mindnode
+**/*.codekit
+
+# Data
+**/+resources
+
+# Composer
+vendor
+
+
+# Wordpress
+**/wp-admin
+**/wp-includes
+**/wp-content/mu-plugins
+**/wp-content/plugins
+**/wordpress
+**/wp-content/uploads/
+**/wp-content/languages/
+
+
+!**/wp-content/plugins/admin-columns-pro
+!**/wp-content/plugins/advanced-custom-fields-pro
+!**/wp-content/plugins/cac-addon-acf-master
+!**/wp-content/plugins/default-to-gd
+!**/wp-content/plugins/mailpoet-premium
