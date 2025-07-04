@@ -4,9 +4,13 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: jakubferenc-wp
+    ports:
+      - "8080:80"
+      - "443:443"
     volumes:
       - ./www:/var/www/html
       - ./.docker/php.ini:/usr/local/etc/php/conf.d/custom.ini
+      - ./.docker/certs:/etc/apache2/ssl
     working_dir: /var/www/html
     environment:
       WORDPRESS_DB_HOST: db:3306
@@ -36,19 +40,5 @@ services:
     working_dir: /app
     command: install
 
-  caddy:
-    image: caddy:latest
-    container_name: jakubferenc-caddy
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile
-      - ./certs:/certs
-      - caddy_data:/data
-      - caddy_config:/config
-
 volumes:
   db_data:
-  caddy_data:
-  caddy_config:
